@@ -12,9 +12,11 @@ const DriveSchema = new Schema({
   endDate: { type: Date, required: true },
   participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   chat: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
-  media: [{ type: String }], // Array of file URLs (images, videos)
+  media: [{ type: String }], 
   liveStreamUrl: { type: String },
   certificates: [{ type: Schema.Types.ObjectId, ref: 'Certificate' }],
+  status: { type: String, enum: ['active', 'completed', 'cancelled'], default: 'active' },
+  maxParticipants: { type: Number, default: 50 } 
 }, { timestamps: true });
 
 export default mongoose.model("Drive", DriveSchema);

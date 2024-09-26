@@ -5,6 +5,7 @@ import fileUpload from "express-fileupload";
 import cors from "cors";
 import http from "http";
 import userRouter from "./routers/userRoutes.js";
+import driveRouter from "./routers/driveRoutes.js";
 
 // Define the port and create an Express app
 const port = 3000;
@@ -14,6 +15,7 @@ app.use(express.json());
 connectDB();
 
 app.use("/users", userRouter);
+app.use("/drives", driveRouter);
 app.use(express.static("public"));
 
 app.set("views", "views");
