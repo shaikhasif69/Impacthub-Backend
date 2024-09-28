@@ -16,10 +16,8 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
     const newUser = new User({
       name,
       username,
@@ -28,11 +26,9 @@ export const register = async (req, res) => {
       role,
     });
 
-    // Save the new user in the database
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    // Log the actual error to get more insight
     console.error("Error registering user:", error);
     res.status(500).json({ error: "Server error", details: error.message });
   }
@@ -90,7 +86,7 @@ export const getUserProfile = async (req, res) => {
     }
     res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching user profile:", error); // Log the error
+    console.error("Error fetching user profile:", error); 
     res.status(500).json({ error: "Server error" });
   }
 };

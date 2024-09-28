@@ -1,13 +1,12 @@
 import express from "express";
 import MongoStore from "connect-mongo";
-import { connectDB } from "./db.js"; // Ensure the file exports `connectDB` as an ES module
+import { connectDB } from "./db.js";
 import fileUpload from "express-fileupload";
 import cors from "cors";
 import http from "http";
 import userRouter from "./routers/userRoutes.js";
 import driveRouter from "./routers/driveRoutes.js";
 
-// Define the port and create an Express app
 const port = 3000;
 const app = express();
 const server = http.createServer(app);

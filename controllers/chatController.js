@@ -14,7 +14,6 @@ export const sendMessage = async (req, res) => {
         return res.status(404).json({ message: "Sender or receiver not found" });
       }
   
-      // Simulate message sending and logging
       const newMessage = {
         from: id,
         to: toUserId,
