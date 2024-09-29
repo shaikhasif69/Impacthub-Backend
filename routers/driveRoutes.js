@@ -8,6 +8,10 @@ import {
   getAllDrives,
   updateDrive,
   deleteDrive,
+  addTeamMember,
+  removeTeamMember,
+  addParticipant,
+  removeParticipant,
 } from "../controllers/driveController.js";
 
 driveRouter.post("/create-drive", authMiddleware, createDrive);
