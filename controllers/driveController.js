@@ -112,6 +112,43 @@ export const getDrivesByCategory = async (req, res) => {
   }
 };
 
+export const getCompletedDrivesLastWeek = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const lastWeekDate = new Date(currentDate);
+    lastWeekDate.setDate(currentDate.getDate() - 7); 
+
+    const drives = await Drive.find({
+      endDate: { $lte: currentDate, $gte: lastWeekDate } 
+    })
+    .populate("creator", "name")
+    .populate("participants", "name");
+
+    res.status(200).json({ drives });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+export const getCompletedDrivesLastMonth = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const lastMonthDate = new Date(currentDate);
+    lastMonthDate.setMonth(currentDate.getMonth() - 1); 
+
+    const drives = await Drive.find({
+      endDate: { $lte: currentDate, $gte: lastMonthDate }
+    })
+    .populate("creator", "name")
+    .populate("participants", "name");
+
+    res.status(200).json({ drives });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+
 export const getDriveById = async (req, res) => {
   const { id } = req.params;
 

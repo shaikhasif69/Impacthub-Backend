@@ -16,6 +16,8 @@ import {
   getUpcomingDrives,
   getOngoingDrives,
   getDrivesByCategory,
+  getCompletedDrivesLastWeek,
+  getCompletedDrivesLastMonth,
 } from "../controllers/driveController.js";
 
 driveRouter.post("/create-drive", authMiddleware, createDrive);
@@ -35,4 +37,14 @@ driveRouter.get("/popular-drives", authMiddleware, getPopularDrives);
 driveRouter.get("/upcoming-drives", authMiddleware, getUpcomingDrives);
 driveRouter.get("/ongoing-drives", authMiddleware, getOngoingDrives);
 driveRouter.get("/category/:category", authMiddleware, getDrivesByCategory);
+driveRouter.get(
+  "/completed-drives-last-week",
+  authMiddleware,
+  getCompletedDrivesLastWeek
+);
+driveRouter.get(
+  "/completed-drives-last-month",
+  authMiddleware,
+  getCompletedDrivesLastMonth
+);
 
