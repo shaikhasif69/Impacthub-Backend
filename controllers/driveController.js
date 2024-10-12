@@ -82,6 +82,36 @@ export const getUpcomingDrives = async (req, res) => {
   }
 };
 
+export const getOngoingDrives = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const drives = await Drive.find({
+      startDate: { $lte: currentDate }, 
+      endDate: { $gte: currentDate }
+    })
+    .populate("creator", "name")
+    .populate("participants", "name");
+    
+    res.status(200).json({ drives });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+export const getDrivesByCategory = async (req, res) => {
+  const { category } = req.params;
+
+  try {
+    const drives = await Drive.find({ category })
+      .populate("creator", "name")
+      .populate("participants", "name");
+
+    res.status(200).json({ drives });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
 export const getDriveById = async (req, res) => {
   const { id } = req.params;
 
