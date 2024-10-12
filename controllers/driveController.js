@@ -41,11 +41,41 @@ export const createDrive = async (req, res) => {
   }
 };
 
+// get drives related api's here! 
+
 export const getAllDrives = async (req, res) => {
   try {
     const drives = await Drive.find()
       .populate("creator", "name")
       .populate("participants", "name");
+    res.status(200).json({ drives });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+export const getPopularDrives = async (req, res) => {
+  try {
+    const drives = await Drive.find()
+      .sort({ participants: -1 })
+      .limit(10)
+      .populate("creator", "name")
+      .populate("participants", "name");
+    
+    res.status(200).json({ drives });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+export const getUpcomingDrives = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const drives = await Drive.find({ startDate: { $gt: currentDate } })
+      .sort({ startDate: 1 }) 
+      .populate("creator", "name")
+      .populate("participants", "name");
+    
     res.status(200).json({ drives });
   } catch (error) {
     res.status(500).json({ error: "Server error", details: error.message });

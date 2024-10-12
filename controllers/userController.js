@@ -23,9 +23,13 @@ export const register = async (req, res) => {
       email,
       password: hashedPassword,
     });
-
+    const token = jwt.sign({ email: newUser.email, id: newUser._id }, JWT_SECRET, {
+      expiresIn: "30d",
+    });
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully" });
+    res
+      .status(200)
+      .json({ message: "User registered successfully", token, user: newUser });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ error: "Server error", details: error.message });
@@ -46,14 +50,18 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { email: user.email, id: user._id },
+      JWT_SECRET,
+      {
+        expiresIn: "30d",
+      }
+    );
 
     res.status(200).json({
       message: "Login successful",
       token,
-      user : user
+      user: user,
     });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
@@ -78,7 +86,7 @@ export const getUserProfile = async (req, res) => {
     }
     res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching user profile:", error); 
+    console.error("Error fetching user profile:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
