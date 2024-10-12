@@ -6,10 +6,9 @@ import mongoose from "mongoose";
 const JWT_SECRET = "IAMCUTE";
 
 export const register = async (req, res) => {
-  const { name, username, email, password, role } = req.body;
+  const { name, username, email, password } = req.body;
 
   try {
-    // Check if the user already exists
     console.log("hello ??");
     let existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -23,7 +22,6 @@ export const register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role,
     });
 
     await newUser.save();
@@ -55,13 +53,7 @@ export const login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user: {
-        id: user._id,
-        name: user.name,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
+      user : user
     });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
