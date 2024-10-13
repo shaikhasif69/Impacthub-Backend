@@ -1,8 +1,14 @@
 import Drive from "../models/Drive.js";
 import User from "../models/User.js";
+import cloudinary from "../helpers/cloudinary.js";
+import multer from 'multer';
+
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 export const createDrive = async (req, res) => {
-  console.log("drive Body : " + JSON.stringify(req.body));
+  console.log("Drive Body: " + JSON.stringify(req.body));
   const {
     name,
     description,
@@ -10,14 +16,32 @@ export const createDrive = async (req, res) => {
     category,
     startDate,
     endDate,
-    media,
-    liveStreamUrl,
     maxParticipants,
   } = req.body;
   const creatorId = req.userId;
-  console.log("creator ID : " + creatorId);
+  console.log("Creator ID: " + creatorId);
 
   try {
+    const driveImages = await Promise.all(
+      req.files.map((file) => {
+        return new Promise((resolve, reject) => {
+          cloudinary.v2.uploader.upload_stream(
+            {
+              folder: "drives", 
+              resource_type: "auto",
+            },
+            (error, result) => {
+              if (error) {
+                reject(new Error(error.message));
+              } else {
+                resolve(result.secure_url); 
+              }
+            }
+          ).end(file.buffer); 
+        });
+      })
+    );
+
     const drive = new Drive({
       name,
       description,
@@ -26,8 +50,7 @@ export const createDrive = async (req, res) => {
       creator: creatorId,
       startDate,
       endDate,
-      media,
-      liveStreamUrl,
+      driveImages, 
       maxParticipants,
     });
 
@@ -37,9 +60,11 @@ export const createDrive = async (req, res) => {
 
     res.status(201).json({ message: "Drive created successfully", drive });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Server error", details: error.message });
   }
 };
+
 
 // get drives related api's here! 
 

@@ -20,7 +20,10 @@ import {
   getCompletedDrivesLastMonth,
 } from "../controllers/driveController.js";
 
-driveRouter.post("/create-drive", authMiddleware, createDrive);
+import upload from "../helpers/multer.js";
+
+
+driveRouter.post("/create-drive", authMiddleware,  upload.array('driveImages'), createDrive);
 driveRouter.get("/get-all-drive", authMiddleware, getAllDrives);
 driveRouter.get("/get-drive-id/:id", authMiddleware, getDriveById);
 driveRouter.patch("/update-drive/:id", authMiddleware, updateDrive);

@@ -10,6 +10,7 @@ import {
   getUserDrives,
   leaveDrive,
   getUserCertificates,
+  searchUsers,
   getUserNotifications,
 } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
@@ -23,6 +24,8 @@ userRouter.post("/logout", logout);
 userRouter.get("/profile/:id", authMiddleware, getUserProfile);
 userRouter.put("/profile/update", authMiddleware, updateProfile);
 userRouter.delete("/profile/delete", authMiddleware, deleteProfile);
+
+userRouter.get('/search-users',authMiddleware, searchUsers);
 
 //drives related routes :
 

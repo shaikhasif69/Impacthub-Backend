@@ -5,7 +5,7 @@ const DriveSchema = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   location: { type: String, required: true },
-  category: { type: String, required: true },
+  category: { type: String, required: false },
   creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   driveImages: {
     type: [String],  
@@ -14,10 +14,10 @@ const DriveSchema = new Schema({
   teamMembers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  participants: [{ type: Schema.Types.ObjectId, ref: 'User' ,  required : false}],
   chat: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
-  media: [{ type: String }], 
-  liveStreamUrl: { type: String },
+  media: [{ type: String, required : false}], 
+  liveStreamUrl: { type: String, required : false},
   certificates: [{ type: Schema.Types.ObjectId, ref: 'Certificate' }],
   status: { type: String, enum: ['active', 'completed', 'cancelled'], default: 'active' },
   maxParticipants: { type: Number, default: 50 } 

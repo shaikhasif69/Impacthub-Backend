@@ -91,6 +91,27 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
+
+// Function to search for users
+export const searchUsers = async (req, res) => {
+  const { query } = req.query; 
+
+  if (!query || query.length < 2) {
+    return res.status(400).json({ message: "Please provide at least 2 characters for the search." });
+  }
+
+  try {
+    const users = await User.find({
+      username: { $regex: query, $options: 'i' } 
+    }).limit(10); 
+
+    res.status(200).json(users); 
+  } catch (error) {
+    console.error("Error searching users:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 export const updateProfile = async (req, res) => {
   const { userId, name, username, profilePicture, location } = req.body;
 
@@ -143,7 +164,9 @@ export const joinDrive = async (req, res) => {
 
     // Add the drive to the user's participation list if not already joined
     if (!user.drives.includes(driveId)) {
+      drive.participants.push(id);
       user.drives.push(driveId);
+      await drive.save();
       await user.save();
     }
 
