@@ -7,9 +7,9 @@ const DriveSchema = new Schema({
   location: { type: String, required: true },
   category: { type: String, required: true },
   creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  driveImageUrl: {
-    type: String,
-    default: "", 
+  driveImages: {
+    type: [String],  
+    default: [],    
   },
   teamMembers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   startDate: { type: Date, required: true },

@@ -26,8 +26,8 @@ userRouter.delete("/profile/delete", authMiddleware, deleteProfile);
 
 //drives related routes :
 
-userRouter.post("/drive/:id/join/:id", authMiddleware, joinDrive);
-userRouter.get("/drive/:id", authMiddleware, getUserDrives);
+userRouter.post("/join-drive/:id/:driveId", authMiddleware, joinDrive);
+userRouter.get("/get-drive/:id", authMiddleware, getUserDrives);
 userRouter.delete("/drive/:id/leave/:id", authMiddleware, leaveDrive);
 
 //certificates related routes here!
