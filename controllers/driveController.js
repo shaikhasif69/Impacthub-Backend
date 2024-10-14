@@ -72,7 +72,7 @@ export const getAllDrives = async (req, res) => {
   try {
     const drives = await Drive.find()
       .populate("creator", "name")
-      .populate("participants", "name");
+      .populate("participants");
     res.status(200).json({ drives });
   } catch (error) {
     res.status(500).json({ error: "Server error", details: error.message });
@@ -309,5 +309,31 @@ export const removeParticipant = async (req, res) => {
       .json({ message: "Participant removed successfully", drive });
   } catch (error) {
     res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+
+// this function will be responsible for marking the participants as attended
+export const markAttendance = async (req, res) => {
+  try {
+    const { driveId, attendeeIds } = req.body;
+
+    const drive = await Drive.findById(driveId);
+    if (!drive) {
+      return res.status(404).json({ message: "Drive not found" });
+    }
+
+    attendeeIds.forEach(async (userId) => {
+      const participant = drive.participants.find(p => p.userId.toString() === userId);
+      if (participant) {
+        participant.attended = true;
+      }
+    });
+
+    await drive.save();
+
+    return res.status(200).json({ message: "Attendance marked successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Error marking attendance", error });
   }
 };

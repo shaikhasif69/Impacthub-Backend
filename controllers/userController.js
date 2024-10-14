@@ -23,9 +23,13 @@ export const register = async (req, res) => {
       email,
       password: hashedPassword,
     });
-    const token = jwt.sign({ email: newUser.email, id: newUser._id }, JWT_SECRET, {
-      expiresIn: "30d",
-    });
+    const token = jwt.sign(
+      { email: newUser.email, id: newUser._id },
+      JWT_SECRET,
+      {
+        expiresIn: "30d",
+      }
+    );
     await newUser.save();
     res
       .status(200)
@@ -50,13 +54,9 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign(
-      { email: user.email, id: user._id },
-      JWT_SECRET,
-      {
-        expiresIn: "30d",
-      }
-    );
+    const token = jwt.sign({ email: user.email, id: user._id }, JWT_SECRET, {
+      expiresIn: "30d",
+    });
 
     res.status(200).json({
       message: "Login successful",
@@ -91,21 +91,24 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-
 // Function to search for users
 export const searchUsers = async (req, res) => {
-  const { query } = req.query; 
+  const { query } = req.query;
 
   if (!query || query.length < 2) {
-    return res.status(400).json({ message: "Please provide at least 2 characters for the search." });
+    return res
+      .status(400)
+      .json({
+        message: "Please provide at least 2 characters for the search.",
+      });
   }
 
   try {
     const users = await User.find({
-      username: { $regex: query, $options: 'i' } 
-    }).limit(10); 
+      username: { $regex: query, $options: "i" },
+    }).limit(10);
 
-    res.status(200).json(users); 
+    res.status(200).json(users);
   } catch (error) {
     console.error("Error searching users:", error);
     res.status(500).json({ error: "Server error" });
@@ -239,6 +242,22 @@ export const getUserNotifications = async (req, res) => {
     }
 
     res.status(200).json({ notifications: user.notifications });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+// getMyCreated drives fucntions api
+
+export const getMyCreatedDrives = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id).populate("drives");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ drives: user.drives });
   } catch (error) {
     res.status(500).json({ error: "Server error", details: error.message });
   }

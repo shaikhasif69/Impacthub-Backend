@@ -6,6 +6,8 @@ const CertificateSchema = new Schema({
   driveId: { type: Schema.Types.ObjectId, ref: "Drive", required: true },
   issuedDate: { type: Date, default: Date.now },
   title: { type: String, required: true },
+  role: { type: String, enum: ['member', 'participant'], required: true },  
+  certificateUrl: { type: String, required: true },
 });
 
 export default mongoose.model("Certificate", CertificateSchema);

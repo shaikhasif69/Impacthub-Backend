@@ -12,6 +12,7 @@ import {
   getUserCertificates,
   searchUsers,
   getUserNotifications,
+  getMyCreatedDrives,
 } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 const userRouter = express.Router();
@@ -24,8 +25,9 @@ userRouter.post("/logout", logout);
 userRouter.get("/profile/:id", authMiddleware, getUserProfile);
 userRouter.put("/profile/update", authMiddleware, updateProfile);
 userRouter.delete("/profile/delete", authMiddleware, deleteProfile);
+userRouter.get("/get-my-drives/:id", authMiddleware, getMyCreatedDrives);
 
-userRouter.get('/search-users',authMiddleware, searchUsers);
+userRouter.get("/search-users", authMiddleware, searchUsers);
 
 //drives related routes :
 
