@@ -1,13 +1,14 @@
 import Certificate from "../models/Certificate";
 import User from "../models/User";
 import Drive from "../models/Drive";
+import Participant from "../models/Participants"; 
 import { sendCertificateEmail } from "../emailService";
 
 export const issueCertificates = async (req, res) => {
   try {
-    const { driveId, attendeeIds, role } = req.body;  
+    const { driveId, attendeeIds, role } = req.body;
 
-    const drive = await Drive.findById(driveId).populate('participants.userId');
+    const drive = await Drive.findById(driveId);
     if (!drive) {
       return res.status(404).json({ message: "Drive not found" });
     }
@@ -17,15 +18,15 @@ export const issueCertificates = async (req, res) => {
     }
 
     for (const userId of attendeeIds) {
-      const participant = drive.participants.find(p => p.userId.toString() === userId);
+      const participant = await Participant.findOne({ userId, driveId });
+
       if (participant && participant.attended) {
         const certificate = new Certificate({
           userId,
           driveId,
           title: `${drive.name} Completion Certificate`,
           role: role || 'participant',
-        //   certificateUrl: generateCertificateUrl(userId, driveId),  
-          certificateUrl: "heheheh",  
+          certificateUrl: generateCertificateUrl(userId, driveId), 
         });
 
         await certificate.save();
@@ -34,6 +35,7 @@ export const issueCertificates = async (req, res) => {
           $push: { certificates: { driveId, certificateUrl: certificate.certificateUrl } },
         });
 
+        const user = await User.findById(userId);
         sendCertificateEmail(user.email, certificate.certificateUrl, drive.name);
       }
     }
@@ -45,9 +47,7 @@ export const issueCertificates = async (req, res) => {
   }
 };
 
-
+// URL generator function for certificates
 const generateCertificateUrl = (userId, driveId) => {
-    // Placeholder for generating the actual URL
-    return `https://certificates.example.com/${userId}/${driveId}`;
-  };
-  
+  return `https://certificates.example.com/${userId}/${driveId}`;
+};

@@ -15,13 +15,12 @@ const DriveSchema = new Schema(
     teamMembers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    // participants: [{ type: Schema.Types.ObjectId, ref: 'User' ,  required : false}],
-    participants: [
-      { userData: { type: Schema.Types.ObjectId, ref: 'User', required: false },
-      attended: { type: Boolean, default: false }, 
-    },
-
-    ],
+    participants: [{ type: Schema.Types.ObjectId, ref: 'User' ,  required : false}],
+    // // participants: [
+    // //   {  userId: { type: Schema.Types.ObjectId, ref: 'User' , required: false },
+    // //   attended: { type: Boolean, default: false }, 
+    // // },
+    // ],
     chat: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
     media: [{ type: String, required: false }],
     liveStreamUrl: { type: String, required: false },

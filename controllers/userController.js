@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import Drive from "../models/Drive.js";
 import mongoose from "mongoose";
 const JWT_SECRET = "IAMCUTE";
+import Participant from "../models/Participants.js";
 
 export const register = async (req, res) => {
   const { name, username, email, password } = req.body;
@@ -96,11 +97,9 @@ export const searchUsers = async (req, res) => {
   const { query } = req.query;
 
   if (!query || query.length < 2) {
-    return res
-      .status(400)
-      .json({
-        message: "Please provide at least 2 characters for the search.",
-      });
+    return res.status(400).json({
+      message: "Please provide at least 2 characters for the search.",
+    });
   }
 
   try {
@@ -153,7 +152,6 @@ export const deleteProfile = async (req, res) => {
 };
 
 // drives related :
-
 export const joinDrive = async (req, res) => {
   const { id, driveId } = req.params;
 
@@ -165,8 +163,19 @@ export const joinDrive = async (req, res) => {
       return res.status(404).json({ message: "User or Drive not found" });
     }
 
-    // Add the drive to the user's participation list if not already joined
-    if (!user.drives.includes(driveId)) {
+    const existingParticipant = await Participant.findOne({
+      userId: id,
+      driveId,
+    });
+
+    if (!existingParticipant) {
+      const newParticipant = new Participant({
+        userId: id,
+        driveId,
+        attended: false,
+      });
+      await newParticipant.save();
+
       drive.participants.push(id);
       user.drives.push(driveId);
       await drive.save();
