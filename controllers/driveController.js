@@ -4,7 +4,6 @@ import cloudinary from "../helpers/cloudinary.js";
 import multer from "multer";
 import Participant from "../models/Participants.js";
 
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -18,6 +17,8 @@ export const createDrive = async (req, res) => {
     startDate,
     endDate,
     maxParticipants,
+    isDonate,
+    donationMethodSeek
   } = req.body;
   const creatorId = req.userId;
   console.log("Creator ID: " + creatorId);
@@ -55,11 +56,14 @@ export const createDrive = async (req, res) => {
       endDate,
       driveImages,
       maxParticipants,
+      isDonate,
+      donationMethodSeek,
     });
 
     await drive.save();
 
     await User.findByIdAndUpdate(creatorId, { $push: { drives: drive._id } });
+    console.log("created drive: " + drive);
 
     res.status(201).json({ message: "Drive created successfully", drive });
   } catch (error) {
@@ -82,15 +86,18 @@ export const getAllDrives = async (req, res) => {
           drive.participants.map(async (participant) => {
             const participantData = await Participant.findOne({
               userId: participant._id,
-              driveId: drive._id
+              driveId: drive._id,
             });
             return {
               ...participant.toObject(),
-              attended: participantData ? participantData.attended : false // Add attendance info
+              attended: participantData ? participantData.attended : false, // Add attendance info
             };
           })
         );
-        return { ...drive.toObject(), participants: participantsWithAttendance };
+        return {
+          ...drive.toObject(),
+          participants: participantsWithAttendance,
+        };
       })
     );
 
@@ -112,7 +119,7 @@ export const getPopularDrives = async (req, res) => {
         populate: {
           path: "userId",
           select: "name username email",
-        }
+        },
       });
 
     res.status(200).json({ drives });
@@ -133,7 +140,7 @@ export const getUpcomingDrives = async (req, res) => {
         populate: {
           path: "userId",
           select: "name username email",
-        }
+        },
       });
 
     res.status(200).json({ drives });
@@ -141,7 +148,6 @@ export const getUpcomingDrives = async (req, res) => {
     res.status(500).json({ error: "Server error", details: error.message });
   }
 };
-
 
 export const getOngoingDrives = async (req, res) => {
   try {
@@ -157,7 +163,7 @@ export const getOngoingDrives = async (req, res) => {
         populate: {
           path: "userId",
           select: "name username email",
-        }
+        },
       });
 
     res.status(200).json({ drives });
@@ -178,7 +184,7 @@ export const getDrivesByCategory = async (req, res) => {
         populate: {
           path: "userId",
           select: "name username email",
-        }
+        },
       });
 
     res.status(200).json({ drives });
@@ -203,7 +209,7 @@ export const getCompletedDrivesLastWeek = async (req, res) => {
         populate: {
           path: "userId",
           select: "name username email",
-        }
+        },
       });
 
     res.status(200).json({ drives });
@@ -228,7 +234,7 @@ export const getCompletedDrivesLastMonth = async (req, res) => {
         populate: {
           path: "userId",
           select: "name username email",
-        }
+        },
       });
 
     res.status(200).json({ drives });
@@ -249,7 +255,7 @@ export const getDriveById = async (req, res) => {
         populate: {
           path: "userId",
           select: "name username email",
-        }
+        },
       });
     if (!drive) {
       return res.status(404).json({ message: "Drive not found" });
@@ -270,13 +276,19 @@ export const updateDrive = async (req, res) => {
       return res.status(404).json({ message: "Drive not found" });
     }
 
-    if (status === 'completed') {
+    if (status === "completed") {
       if (!attendeeIds || attendeeIds.length === 0) {
-        return res.status(400).json({ message: "Attendee IDs must be provided to mark the drive as completed" });
+        return res.status(400).json({
+          message:
+            "Attendee IDs must be provided to mark the drive as completed",
+        });
       }
 
       for (const userId of attendeeIds) {
-        await Participant.updateOne({ userId, driveId: id }, { attended: true });
+        await Participant.updateOne(
+          { userId, driveId: id },
+          { attended: true }
+        );
       }
     }
 
@@ -288,7 +300,6 @@ export const updateDrive = async (req, res) => {
     res.status(500).json({ error: "Server error", details: error.message });
   }
 };
-
 
 export const deleteDrive = async (req, res) => {
   const { id } = req.params;

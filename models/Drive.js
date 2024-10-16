@@ -8,6 +8,7 @@ const DriveSchema = new Schema(
     location: { type: String, required: true },
     category: { type: String, required: false },
     creator: { type: Schema.Types.ObjectId, ref: "User", required: true },
+
     driveImages: {
       type: [String],
       default: [],
@@ -15,15 +16,10 @@ const DriveSchema = new Schema(
     teamMembers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    participants: [{ type: Schema.Types.ObjectId, ref: 'User' ,  required : false}],
-    // // participants: [
-    // //   {  userId: { type: Schema.Types.ObjectId, ref: 'User' , required: false },
-    // //   attended: { type: Boolean, default: false }, 
-    // // },
-    // ],
+    participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     chat: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
-    media: [{ type: String, required: false }],
-    liveStreamUrl: { type: String, required: false },
+    media: [{ type: String }],
+    liveStreamUrl: { type: String },
     certificates: [{ type: Schema.Types.ObjectId, ref: "Certificate" }],
     status: {
       type: String,
@@ -31,6 +27,22 @@ const DriveSchema = new Schema(
       default: "active",
     },
     maxParticipants: { type: Number, default: 50 },
+
+    isDonate: { type: Boolean, default: false },
+    donationMethodSeek: {
+      type: [String],
+      enum: ["Goods", "Money", "Both", "None"],
+      default: [], 
+    },
+    donations: [
+      {
+        user: { type: Schema.Types.ObjectId, ref: "User" },
+        type: { type: String, enum: ["goods", "money"], required: true },
+        amount: { type: Number }, 
+        goodsDescription: { type: String }, 
+        date: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );
