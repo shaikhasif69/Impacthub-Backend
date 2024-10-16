@@ -188,15 +188,39 @@ export const joinDrive = async (req, res) => {
   }
 };
 
+// below funciton GetuserDrives, i want to show the drives only those, who he's as a participant, but not as a creator
+// so tell me where would i need to make changes in order to get that response and teach me also
+
+// export const getUserDrives = async (req, res) => {
+//   const { id } = req.params;
+
+//   try {
+//     const user = await User.findById(id).populate("drives");
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+//     res.status(200).json({ drives: user.drives });
+//   } catch (error) {
+//     res.status(500).json({ error: "Server error", details: error.message });
+//   }
+// };
+
 export const getUserDrives = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await User.findById(id).populate("drives");
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({ drives: user.drives });
+
+    // Find drives where the user is a participant but not the creator
+    const drives = await Drive.find({
+      participants: id, // User is a participant
+      creator: { $ne: id }, // User is not the creator
+    });
+
+    res.status(200).json({ drives });
   } catch (error) {
     res.status(500).json({ error: "Server error", details: error.message });
   }
@@ -262,11 +286,15 @@ export const getMyCreatedDrives = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await User.findById(id).populate("drives");
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({ drives: user.drives });
+
+    // Find drives where the user is the creator
+    const drives = await Drive.find({ creator: id });
+
+    res.status(200).json({ drives });
   } catch (error) {
     res.status(500).json({ error: "Server error", details: error.message });
   }

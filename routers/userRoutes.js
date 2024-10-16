@@ -25,7 +25,6 @@ userRouter.post("/logout", logout);
 userRouter.get("/profile/:id", authMiddleware, getUserProfile);
 userRouter.put("/profile/update", authMiddleware, updateProfile);
 userRouter.delete("/profile/delete", authMiddleware, deleteProfile);
-userRouter.get("/get-my-drives/:id", authMiddleware, getMyCreatedDrives);
 
 userRouter.get("/search-users", authMiddleware, searchUsers);
 
@@ -33,6 +32,8 @@ userRouter.get("/search-users", authMiddleware, searchUsers);
 
 userRouter.post("/join-drive/:id/:driveId", authMiddleware, joinDrive);
 userRouter.get("/get-drive/:id", authMiddleware, getUserDrives);
+userRouter.get("/get-my-drives/:id", authMiddleware, getMyCreatedDrives);
+
 userRouter.delete("/drive/:id/leave/:id", authMiddleware, leaveDrive);
 
 //certificates related routes here!
