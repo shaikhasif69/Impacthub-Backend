@@ -61,7 +61,7 @@ export const createDrive = async (req, res) => {
       driveImages,
       maxParticipants,
       isDonate,
-      teamMembers: JSON.parse(teamMembers).map(id => mongoose.Types.ObjectId(id)),
+      teamMembers: JSON.parse(teamMembers).map(id => new mongoose.Types.ObjectId(id)),
       
     });
 
