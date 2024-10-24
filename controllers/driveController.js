@@ -18,10 +18,10 @@ export const createDrive = async (req, res) => {
     endDate,
     maxParticipants,
     isDonate,
-    // teamMembers,
+    teamMembers,
     
   } = req.body;
-  const teamMembers = req.body.teamMembers.map(id => mongoose.Types.ObjectId(id));
+  // const teamMembers = req.body.teamMembers.map(id => mongoose.Types.ObjectId(id));
   const creatorId = req.userId;
   console.log("Creator ID: " + creatorId);
 
@@ -59,8 +59,8 @@ export const createDrive = async (req, res) => {
       driveImages,
       maxParticipants,
       isDonate,
-      teamMembers,
-      selectedUserIds,
+      teamMembers: JSON.parse(teamMembers).map(id => mongoose.Types.ObjectId(id)),
+      
     });
 
     await drive.save();
