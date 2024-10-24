@@ -61,7 +61,7 @@ export const createDrive = async (req, res) => {
       driveImages,
       maxParticipants,
       isDonate,
-      teamMembers: JSON.parse(teamMembers).map(id => new mongoose.Types.ObjectId(id)),
+      teamMembers: JSON.parse(teamMembers).map(id =>new mongoose.Types.ObjectId(id)),
       
     });
 
@@ -82,7 +82,9 @@ export const getAllDrives = async (req, res) => {
   try {
     const drives = await Drive.find()
       .populate("creator", "name")
-      .populate("participants", "name username email"); // Populate participant details from the User model
+      .populate("participants", "name username email")
+      .populate("teamMembers", "name username email");
+      ; // Populate participant details from the User model
 
     // Fetch attendance data for participants
     const drivesWithAttendance = await Promise.all(
