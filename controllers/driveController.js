@@ -18,7 +18,8 @@ export const createDrive = async (req, res) => {
     endDate,
     maxParticipants,
     isDonate,
-    donationMethodSeek
+    teamMembers,
+    selectedUserIds,
   } = req.body;
   const creatorId = req.userId;
   console.log("Creator ID: " + creatorId);
@@ -57,7 +58,8 @@ export const createDrive = async (req, res) => {
       driveImages,
       maxParticipants,
       isDonate,
-      donationMethodSeek,
+      teamMembers,
+      selectedUserIds,
     });
 
     await drive.save();

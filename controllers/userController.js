@@ -291,7 +291,6 @@ export const getMyCreatedDrives = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Find drives where the user is the creator
     const drives = await Drive.find({ creator: id });
 
     res.status(200).json({ drives });
