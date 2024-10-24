@@ -18,9 +18,10 @@ export const createDrive = async (req, res) => {
     endDate,
     maxParticipants,
     isDonate,
-    teamMembers,
-    selectedUserIds,
+    // teamMembers,
+    
   } = req.body;
+  const teamMembers = req.body.teamMembers.map(id => mongoose.Types.ObjectId(id));
   const creatorId = req.userId;
   console.log("Creator ID: " + creatorId);
 
