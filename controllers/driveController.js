@@ -3,6 +3,8 @@ import User from "../models/User.js";
 import cloudinary from "../helpers/cloudinary.js";
 import multer from "multer";
 import Participant from "../models/Participants.js";
+import mongoose from "mongoose";
+
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
